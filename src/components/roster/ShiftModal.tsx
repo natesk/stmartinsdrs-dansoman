@@ -85,7 +85,7 @@ export default function ShiftModal({ isOpen, onClose, day, shift, shiftData }: S
         </div>
         <div className="flex justify-end space-x-2">
           {canSignUp && (
-            <Button onClick={handleSignUp} className="bg-accent text-accent-foreground hover:bg-accent/90">
+            <Button onClick={handleSignUp}>
               <UserPlus className="mr-2 h-4 w-4"/> Sign Up
             </Button>
           )}
