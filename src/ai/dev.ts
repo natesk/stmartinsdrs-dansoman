@@ -1,6 +1,20 @@
-import { config } from 'dotenv';
-config();
-
-import '@/ai/flows/suggest-under-scheduled.ts';
-import '@/ai/flows/analyze-shift-sign-ups.ts';
-import '@/ai/flows/real-time-roster-updates.ts';
+{
+  "hosting": {
+    "public": ".",
+    "ignore": [
+      "firebase.json",
+      "firestore.rules",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  },
+  "firestore": {
+    "rules": "firestore.rules"
+  }
+}

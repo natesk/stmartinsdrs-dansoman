@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RoyalRoster Pro - Medical Staff Scheduling</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --border: #e2e8f0;
+            --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            padding: 20px 0;
+            margin-bottom: 30px;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-lg);
+            max-width: 400px;
+            margin: 100px auto;
+        }
+
+        .login-card h2 {
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .roster-grid {
+            display: grid;
+            grid-template-columns: 150px repeat(7, 1fr);
+            gap: 2px;
+            background: var(--border);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .roster-header {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .shift-label {
+            background: var(--card-bg);
+            padding: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .shift-cell {
+            background: var(--card-bg);
+            padding: 15px;
+            min-height: 80px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .shift-cell:hover {
+            background: #f1f5f9;
+        }
+
+        .shift-cell.my-shift {
+            background: #ede9fe;
+            border: 2px solid var(--primary);
+        }
+
+        .shift-cell.full {
+            background: #fee2e2;
+        }
+
+        .doctor-name {
+            font-size: 12px;
+            padding: 3px 6px;
+            background: var(--primary);
+            color: white;
+            border-radius: 4px;
+            display: inline-block;
+            margin: 2px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-light);
+        }
+
+        .admin-panel {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-top: 20px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-lg);
+            z-index: 2000;
+            display: none;
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideIn 0.3s;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .badge {
+            background: var(--warning);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Login View -->
+    <div id="loginView">
+        <div class="login-card">
+            <h2>🏥 RoyalRoster Pro</h2>
+            <p style="color: var(--text-light); margin-bottom: 20px;">Medical Staff Scheduling System</p>
+            
+            <div>
+                <label>Select your name:</label>
+                <select id="doctorSelect">
+                    <option value="">-- Choose Doctor --</option>
+                </select>
+                <button class="btn btn-primary" onclick="loginAsDoctor()" style="width: 100%; margin-top: 10px;">
+                    Login as Doctor
+                </button>
+            </div>
+
+            <div style="text-align: center; margin: 20px 0; color: var(--text-light);">OR</div>
+
+            <button class="btn btn-primary" onclick="showAdminLogin()" style="width: 100%;">
+                Login as Clinical Coordinator
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App View -->
+    <div id="appView" class="hidden">
+        <header>
+            <div class="header-content">
+                <h1>🏥 RoyalRoster Pro</h1>
+                <div class="user-info">
+                    <span id="currentUser"></span>
+                    <button class="btn btn-danger" onclick="logout()">Logout</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="container">
+            <div id="rosterContainer">
+                <h2 style="margin-bottom: 20px;">Weekly Schedule</h2>
+                <div id="rosterGrid" class="roster-grid"></div>
+            </div>
+
+            <div id="adminPanel" class="admin-panel hidden">
+                <h3>Admin Panel</h3>
+                <div style="margin-top: 20px;">
+                    <h4>Add New Doctor</h4>
+                    <input type="text" id="newDoctorName" placeholder="Dr. John Doe">
+                    <button class="btn btn-success" onclick="addDoctor()">Add Doctor</button>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <h4>Manage Doctors</h4>
+                    <div id="doctorList"></div>
+                </div>
+
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-danger" onclick="resetRoster()">Reset All Shifts</button>
+                    <p style="font-size: 12px; color: var(--text-light); margin-top: 5px;">
+                        ⚠️ Can only reset on weekends
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shift Modal -->
+    <div id="shiftModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div id="modalBody"></div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button id="signupBtn" class="btn btn-success" onclick="signupForShift()">Sign Up</button>
+                <button id="withdrawBtn" class="btn btn-danger" onclick="withdrawFromShift()">Withdraw</button>
+                <button class="btn" onclick="closeModal()" style="background: var(--text-light); color: white;">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PIN Modal -->
+    <div id="pinModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Enter Admin PIN</h3>
+                <button class="close-btn" onclick="closePinModal()">&times;</button>
+            </div>
+            <input type="password" id="pinInput" placeholder="Enter PIN">
+            <button class="btn btn-primary" onclick="verifyPin()" style="width: 100%; margin-top: 10px;">Confirm</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyB7DBv-AMh8DFDUKCwPvgmNM2hdrzfejIY",
+            authDomain: "rosterpro-4-royaldrs.firebaseapp.com",
+            projectId: "rosterpro-4-royaldrs",
+            storageBucket: "rosterpro-4-royaldrs.firebasestorage.app",
+            messagingSenderId: "347272495930",
+            appId: "1:347272495930:web:454140fae506eac749c603"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Constants
+        const ADMIN_PIN = "152035";
+        const SLOTS_PER_SHIFT = 2;
+        const DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const SHIFTS = ['Morning Shift', 'Afternoon Shift', 'Night Shift'];
+        const INITIAL_DOCTORS = [
+            "Dr. John Smith",
+            "Dr. Sarah Johnson",
+            "Dr. Michael Brown",
+            "Dr. Emily Davis",
+            "Dr. David Wilson"
+        ];
+
+        // State
+        let currentUser = null;
+        let isAdmin = false;
+        let roster = {};
+        let doctors = [];
+        let selectedShift = null;
+        let unsubscribeRoster = null;
+        let unsubscribeDoctors = null;
+
+        // Initialize App
+        async function initApp() {
+            try {
+                // Listen to roster changes
+                unsubscribeRoster = db.collection('roster').doc('currentWeek')
+                    .onSnapshot(async (doc) => {
+                        if (doc.exists) {
+                            roster = doc.data();
+                        } else {
+                            // Initialize roster
+                            roster = createEmptyRoster();
+                            await db.collection('roster').doc('currentWeek').set(roster);
+                        }
+                        renderRoster();
+                    });
+
+                // Listen to doctors changes
+                unsubscribeDoctors = db.collection('doctors').doc('list')
+                    .onSnapshot(async (doc) => {
+                        if (doc.exists) {
+                            doctors = doc.data().names || [];
+                        } else {
+                            // Initialize doctors
+                            doctors = [...INITIAL_DOCTORS];
+                            await db.collection('doctors').doc('list').set({ names: doctors });
+                        }
+                        populateDoctorSelect();
+                        if (isAdmin) renderDoctorList();
+                    });
+
+            } catch (error) {
+                console.error('Error initializing app:', error);
+                showToast('Error connecting to database', true);
+            }
+        }
+
+        function createEmptyRoster() {
+            const emptyRoster = { days: {} };
+            DAYS.forEach(day => {
+                emptyRoster.days[day] = {};
+                SHIFTS.forEach(shift => {
+                    emptyRoster.days[day][shift] = {
+                        slots: SLOTS_PER_SHIFT,
+                        applicants: []
+                    };
+                });
+            });
+            return emptyRoster;
+        }
+
+        function populateDoctorSelect() {
+            const select = document.getElementById('doctorSelect');
+            select.innerHTML = '<option value="">-- Choose Doctor --</option>';
+            doctors.forEach(doc => {
+                const option = document.createElement('option');
+                option.value = doc;
+                option.textContent = doc;
+                select.appendChild(option);
+            });
+        }
+
+        function loginAsDoctor() {
+            const select = document.getElementById('doctorSelect');
+            if (!select.value) {
+                showToast('Please select a doctor', true);
+                return;
+            }
+            currentUser = select.value;
+            isAdmin = false;
+            showApp();
+        }
+
+        function showAdminLogin() {
+            document.getElementById('pinModal').classList.add('show');
+        }
+
+        function verifyPin() {
+            const pin = document.getElementById('pinInput').value;
+            if (pin === ADMIN_PIN) {
+                currentUser = 'Clinical Coordinator';
+                isAdmin = true;
+                closePinModal();
+                showApp();
+            } else {
+                showToast('Invalid PIN', true);
+            }
+        }
+
+        function showApp() {
+            document.getElementById('loginView').classList.add('hidden');
+            document.getElementById('appView').classList.remove('hidden');
+            document.getElementById('currentUser').innerHTML = 
+                `<strong>${currentUser}</strong> ${isAdmin ? '<span class="badge">ADMIN</span>' : ''}`;
+            
+            if (isAdmin) {
+                document.getElementById('adminPanel').classList.remove('hidden');
+                renderDoctorList();
+            }
+            renderRoster();
+        }
+
+        function logout() {
+            if (unsubscribeRoster) unsubscribeRoster();
+            if (unsubscribeDoctors) unsubscribeDoctors();
+            
+            currentUser = null;
+            isAdmin = false;
+            document.getElementById('appView').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
+            document.getElementById('adminPanel').classList.add('hidden');
+            document.getElementById('pinInput').value = '';
+        }
+
+        function renderRoster() {
+            if (!roster.days) return;
+            
+            const grid = document.getElementById('rosterGrid');
+            grid.innerHTML = '';
+
+            // Header row
+            grid.innerHTML += '<div class="roster-header"></div>';
+            DAYS.forEach(day => {
+                grid.innerHTML += `<div class="roster-header">${day}</div>`;
+            });
+
+            // Shift rows
+            SHIFTS.forEach(shift => {
+                grid.innerHTML += `<div class="shift-label">${shift}</div>`;
+                DAYS.forEach(day => {
+                    const shiftData = roster.days[day]?.[shift] || { slots: SLOTS_PER_SHIFT, applicants: [] };
+                    const isMyShift = shiftData.applicants.includes(currentUser);
+                    const isFull = shiftData.applicants.length >= shiftData.slots;
+                    
+                    let cellClass = 'shift-cell';
+                    if (isMyShift) cellClass += ' my-shift';
+                    else if (isFull) cellClass += ' full';
+
+                    let html = `<div class="${cellClass}" onclick="openShiftModal('${day}', '${shift}')">`;
+                    html += `<div style="font-size: 11px; color: var(--text-light); margin-bottom: 5px;">
+                        ${shiftData.applicants.length}/${shiftData.slots} filled
+                    </div>`;
+                    shiftData.applicants.forEach(doc => {
+                        html += `<span class="doctor-name">${doc.replace('Dr. ', '')}</span>`;
+                    });
+                    html += '</div>';
+                    
+                    grid.innerHTML += html;
+                });
+            });
+        }
+
+        function openShiftModal(day, shift) {
+            selectedShift = { day, shift };
+            const shiftData = roster.days[day][shift];
+            
+            document.getElementById('modalTitle').textContent = `${day} - ${shift}`;
+            
+            let html = `
+                <div><strong>Available Slots:</strong> ${shiftData.slots}</div>
+                <div><strong>Filled:</strong> ${shiftData.applicants.length}</div>
+                <div style="margin-top: 15px;"><strong>Doctors Assigned:</strong></div>
+            `;
+            
+            if (shiftData.applicants.length > 0) {
+                html += '<ul style="margin-top: 10px;">';
+                shiftData.applicants.forEach(doc => {
+                    html += `<li>${doc}</li>`;
+                });
+                html += '</ul>';
+            } else {
+                html += '<p style="color: var(--text-light); margin-top: 10px;">No doctors assigned yet</p>';
+            }
+            
+            document.getElementById('modalBody').innerHTML = html;
+
+            const isMyShift = shiftData.applicants.includes(currentUser);
+            const isFull = shiftData.applicants.length >= shiftData.slots;
+            
+            document.getElementById('signupBtn').style.display = 
+                (!isMyShift && !isFull && !isAdmin) ? 'block' : 'none';
+            document.getElementById('withdrawBtn').style.display = 
+                (isMyShift && !isAdmin) ? 'block' : 'none';
+            
+            document.getElementById('shiftModal').classList.add('show');
+        }
+
+        async function signupForShift() {
+            if (!selectedShift || isAdmin) return;
+            
+            const { day, shift } = selectedShift;
+            const shiftData = roster.days[day][shift];
+            
+            if (shiftData.applicants.length >= shiftData.slots) {
+                showToast('Shift is full', true);
+                return;
+            }
+            
+            if (shiftData.applicants.includes(currentUser)) {
+                showToast('Already signed up', true);
+                return;
+            }
+            
+            try {
+                shiftData.applicants.push(currentUser);
+                await db.collection('roster').doc('currentWeek').set(roster);
+                showToast('Successfully signed up for shift!');
+                closeModal();
+            } catch (error) {
+                console.error('Error signing up:', error);
+                showToast('Error signing up', true);
+            }
+        }
+
+        async function withdrawFromShift() {
+            if (!selectedShift || isAdmin) return;
+            
+            const { day, shift } = selectedShift;
+            const shiftData = roster.days[day][shift];
+            
+            const index = shiftData.applicants.indexOf(currentUser);
+            if (index === -1) {
+                showToast('Not signed up for this shift', true);
+                return;
+            }
+            
+            try {
+                shiftData.applicants.splice(index, 1);
+                await db.collection('roster').doc('currentWeek').set(roster);
+                showToast('Successfully withdrawn from shift');
+                closeModal();
+            } catch (error) {
+                console.error('Error withdrawing:', error);
+                showToast('Error withdrawing', true);
+            }
+        }
+
+        async function addDoctor() {
+            const input = document.getElementById('newDoctorName');
+            const name = input.value.trim();
+            
+            if (!name) {
+                showToast('Please enter a name', true);
+                return;
+            }
+            
+            if (!name.startsWith('Dr. ')) {
+                showToast('Name must start with "Dr. "', true);
+                return;
+            }
+            
+            if (doctors.includes(name)) {
+                showToast('Doctor already exists', true);
+                return;
+            }
+            
+            try {
+                doctors.push(name);
+                await db.collection('doctors').doc('list').set({ names: doctors });
+                input.value = '';
+                showToast('Doctor added successfully!');
+            } catch (error) {
+                console.error('Error adding doctor:', error);
+                showToast('Error adding doctor', true);
+            }
+        }
+
+        async function removeDoctor(name) {
+            if (!confirm(`Remove ${name} from the system?`)) return;
+            
+            try {
+                // Remove from doctors list
+                doctors = doctors.filter(d => d !== name);
+                await db.collection('doctors').doc('list').set({ names: doctors });
+                
+                // Remove from all shifts
+                DAYS.forEach(day => {
+                    SHIFTS.forEach(shift => {
+                        const shiftData = roster.days[day][shift];
+                        shiftData.applicants = shiftData.applicants.filter(d => d !== name);
+                    });
+                });
+                await db.collection('roster').doc('currentWeek').set(roster);
+                
+                showToast('Doctor removed successfully');
+            } catch (error) {
+                console.error('Error removing doctor:', error);
+                showToast('Error removing doctor', true);
+            }
+        }
+
+        function renderDoctorList() {
+            const list = document.getElementById('doctorList');
+            list.innerHTML = '';
+            doctors.forEach(doc => {
+                const div = document.createElement('div');
+                div.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 10px; margin: 5px 0; background: var(--bg); border-radius: 6px;';
+                div.innerHTML = `
+                    <span>${doc}</span>
+                    <button class="btn btn-danger" onclick="removeDoctor('${doc}')" style="padding: 5px 10px; font-size: 12px;">Remove</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        async function resetRoster() {
+            const today = new Date().getDay();
+            if (today !== 0 && today !== 6) {
+                showToast('Can only reset on weekends', true);
+                return;
+            }
+            
+            if (!confirm('Reset ALL shifts? This cannot be undone!')) return;
+            
+            try {
+                roster = createEmptyRoster();
+                await db.collection('roster').doc('currentWeek').set(roster);
+                showToast('Roster reset successfully');
+            } catch (error) {
+                console.error('Error resetting roster:', error);
+                showToast('Error resetting roster', true);
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('shiftModal').classList.remove('show');
+            selectedShift = null;
+        }
+
+        function closePinModal() {
+            document.getElementById('pinModal').classList.remove('show');
+            document.getElementById('pinInput').value = '';
+        }
+
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = isError ? 'var(--danger)' : 'var(--success)';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Initialize on load
+        initApp();
+    </script>
+</body>
+</html>
+
+    
