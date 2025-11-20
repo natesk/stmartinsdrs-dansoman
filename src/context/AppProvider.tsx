@@ -33,32 +33,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const doctorsDocRef = doc(db, 'doctors', 'list');
     const rosterDocRef = doc(db, 'roster', 'currentWeek');
 
-    const initializeData = async () => {
-      try {
-        const doctorsDoc = await getDoc(doctorsDocRef);
-        if (!doctorsDoc.exists()) {
+    const unsubDoctors = onSnapshot(doctorsDocRef, async (docSnapshot) => {
+      if (!docSnapshot.exists()) {
+        try {
           await setDoc(doctorsDocRef, { names: INITIAL_DOCTORS });
+        } catch (error) {
+          console.error("Error initializing doctors:", error);
+           toast({
+            variant: "destructive",
+            title: "Initialization Error",
+            description: "Could not initialize doctor list.",
+          });
         }
-
-        const rosterDoc = await getDoc(rosterDocRef);
-        if (!rosterDoc.exists()) {
-          await setDoc(rosterDocRef, getInitialRoster());
-        }
-      } catch (error) {
-        console.error("Error initializing data:", error);
-        toast({
-          variant: "destructive",
-          title: "Initialization Error",
-          description: "Could not initialize application data.",
-        });
-      }
-    };
-
-    initializeData();
-
-    const unsubDoctors = onSnapshot(doctorsDocRef, (doc) => {
-      if (doc.exists()) {
-        setDoctors(doc.data() as Doctors);
+      } else {
+        setDoctors(docSnapshot.data() as Doctors);
       }
     }, (error) => {
       console.error("Error fetching doctors:", error);
@@ -68,10 +56,21 @@ export function AppProvider({ children }: { children: ReactNode }) {
         description: "Could not load doctor list.",
       });
     });
-
-    const unsubRoster = onSnapshot(rosterDocRef, (doc) => {
-      if (doc.exists()) {
-        setRoster(doc.data() as Roster);
+    
+    const unsubRoster = onSnapshot(rosterDocRef, async (docSnapshot) => {
+      if (!docSnapshot.exists()) {
+        try {
+          await setDoc(rosterDocRef, getInitialRoster());
+        } catch (error) {
+           console.error("Error initializing roster:", error);
+           toast({
+            variant: "destructive",
+            title: "Initialization Error",
+            description: "Could not initialize roster.",
+          });
+        }
+      } else {
+        setRoster(docSnapshot.data() as Roster);
       }
       setLoading(false);
     }, (error) => {
@@ -157,7 +156,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         title: "Doctor Removed",
         description: `${name} has been removed and withdrawn from all shifts.`,
       });
-    } catch (error) {
+    } catch (error)      {
       console.error("Error removing doctor:", error);
       toast({
         variant: "destructive",
