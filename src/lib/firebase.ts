@@ -2,13 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyB7DBv-AMh8DFDUKCwPvgmNM2hdrzfejIY",
-  authDomain: "rosterpro-4-royaldrs.firebaseapp.com",
-  projectId: "rosterpro-4-royaldrs",
-  storageBucket: "rosterpro-4-royaldrs.appspot.com",
-  messagingSenderId: "347272495930",
-  appId: "1:347272495930:web:454140fae506eac749c603",
-  measurementId: "G-BEGCPHRSZL"
+  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
