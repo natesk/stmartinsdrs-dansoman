@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { db } from '@/lib/firebase';
-import { doc, onSnapshot, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove, DocumentData } from 'firebase/firestore';
+import { doc, onSnapshot, setDoc, updateDoc, arrayUnion, arrayRemove, getDoc } from 'firebase/firestore';
 import type { User, Roster, Doctors } from '@/lib/types';
 import { getInitialRoster, INITIAL_DOCTORS } from '@/lib/initial-data';
 import { useToast } from '@/hooks/use-toast';
