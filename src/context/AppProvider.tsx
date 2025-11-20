@@ -30,12 +30,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const { toast } = useToast();
 
   useEffect(() => {
-    const initializeData = async () => {
-      setLoading(true);
-      try {
-        const doctorsDocRef = doc(db, 'doctors', 'list');
-        const rosterDocRef = doc(db, 'roster', 'currentWeek');
+    const doctorsDocRef = doc(db, 'doctors', 'list');
+    const rosterDocRef = doc(db, 'roster', 'currentWeek');
 
+    const initializeData = async () => {
+      try {
         const doctorsDoc = await getDoc(doctorsDocRef);
         if (!doctorsDoc.exists()) {
           await setDoc(doctorsDocRef, { names: INITIAL_DOCTORS });
@@ -53,38 +52,42 @@ export function AppProvider({ children }: { children: ReactNode }) {
           description: "Could not initialize application data.",
         });
       }
-
-      const unsubDoctors = onSnapshot(doc(db, 'doctors', 'list'), (doc) => {
-        setDoctors(doc.data() as Doctors);
-      }, (error) => {
-        console.error("Error fetching doctors:", error);
-        toast({
-          variant: "destructive",
-          title: "Data Error",
-          description: "Could not load doctor list.",
-        });
-      });
-
-      const unsubRoster = onSnapshot(doc(db, 'roster', 'currentWeek'), (doc) => {
-        setRoster(doc.data() as Roster);
-        setLoading(false);
-      }, (error) => {
-        console.error("Error fetching roster:", error);
-        toast({
-          variant: "destructive",
-          title: "Data Error",
-          description: "Could not load roster.",
-        });
-        setLoading(false);
-      });
-
-      return () => {
-        unsubDoctors();
-        unsubRoster();
-      };
     };
 
     initializeData();
+
+    const unsubDoctors = onSnapshot(doctorsDocRef, (doc) => {
+      if (doc.exists()) {
+        setDoctors(doc.data() as Doctors);
+      }
+    }, (error) => {
+      console.error("Error fetching doctors:", error);
+      toast({
+        variant: "destructive",
+        title: "Data Error",
+        description: "Could not load doctor list.",
+      });
+    });
+
+    const unsubRoster = onSnapshot(rosterDocRef, (doc) => {
+      if (doc.exists()) {
+        setRoster(doc.data() as Roster);
+      }
+      setLoading(false);
+    }, (error) => {
+      console.error("Error fetching roster:", error);
+      toast({
+        variant: "destructive",
+        title: "Data Error",
+        description: "Could not load roster.",
+      });
+      setLoading(false);
+    });
+
+    return () => {
+      unsubDoctors();
+      unsubRoster();
+    };
   }, [toast]);
 
   const login = (user: User) => {
