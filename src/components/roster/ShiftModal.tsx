@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
 import type { Shift } from '@/lib/types';
-import { SLOTS_PER_SHIFT } from '@/lib/initial-data';
 import { useToast } from '@/hooks/use-toast';
 import { UserPlus, UserMinus, Users } from 'lucide-react';
 
@@ -29,9 +28,9 @@ export default function ShiftModal({ isOpen, onClose, day, shift, shiftData }: S
 
   if (!user) return null;
 
-  const { applicants } = shiftData;
+  const { applicants, slots } = shiftData;
   const isUserInShift = applicants.includes(user.name);
-  const isShiftFull = applicants.length >= SLOTS_PER_SHIFT;
+  const isShiftFull = applicants.length >= slots;
   const canSignUp = user.role === 'Doctor' && !isUserInShift && !isShiftFull;
   const canWithdraw = user.role === 'Doctor' && isUserInShift;
 
@@ -65,7 +64,7 @@ export default function ShiftModal({ isOpen, onClose, day, shift, shiftData }: S
             {shift} - {day}
           </DialogTitle>
           <DialogDescription>
-            Manage your sign-up for this shift. Available slots: {SLOTS_PER_SHIFT - applicants.length}/{SLOTS_PER_SHIFT}
+            Manage your sign-up for this shift. Available slots: {slots - applicants.length}/{slots}
           </DialogDescription>
         </DialogHeader>
         <div className="py-4">

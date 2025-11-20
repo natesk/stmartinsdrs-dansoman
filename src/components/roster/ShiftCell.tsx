@@ -3,7 +3,6 @@
 import { useApp } from '@/context/AppProvider';
 import { cn } from '@/lib/utils';
 import type { Shift } from '@/lib/types';
-import { SLOTS_PER_SHIFT } from '@/lib/initial-data';
 import { Progress } from '@/components/ui/progress';
 
 interface ShiftCellProps {
@@ -13,9 +12,9 @@ interface ShiftCellProps {
 
 export default function ShiftCell({ shiftData, onClick }: ShiftCellProps) {
   const { user } = useApp();
-  const { applicants } = shiftData;
+  const { applicants, slots } = shiftData;
   const filledSlots = applicants.length;
-  const progress = (filledSlots / SLOTS_PER_SHIFT) * 100;
+  const progress = (filledSlots / slots) * 100;
   const isUserInShift = user ? applicants.includes(user.name) : false;
 
   return (
@@ -26,7 +25,7 @@ export default function ShiftCell({ shiftData, onClick }: ShiftCellProps) {
         isUserInShift
           ? 'bg-primary/10 border-primary shadow-inner'
           : 'bg-card hover:bg-accent/50 border-transparent',
-        filledSlots >= SLOTS_PER_SHIFT && !isUserInShift ? 'bg-muted/50 cursor-not-allowed' : ''
+        filledSlots >= slots && !isUserInShift ? 'bg-muted/50 cursor-not-allowed' : ''
       )}
     >
       <div className="flex-grow space-y-1">
@@ -44,8 +43,9 @@ export default function ShiftCell({ shiftData, onClick }: ShiftCellProps) {
           </div>
         ))}
       </div>
-      <div className="pt-1">
-        <Progress value={progress} className="h-2" />
+       <div className="flex items-center justify-between pt-1">
+         <span className="text-xs text-muted-foreground">{filledSlots}/{slots}</span>
+        <Progress value={progress} className="h-2 w-1/2" />
       </div>
     </div>
   );

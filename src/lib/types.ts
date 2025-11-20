@@ -5,6 +5,7 @@ export type User = {
 
 export type Shift = {
   applicants: string[];
+  slots: number;
 };
 
 export type Day = {
