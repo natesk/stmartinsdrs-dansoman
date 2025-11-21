@@ -37,41 +37,43 @@ export default function RosterTable() {
 
   return (
     <>
-      <Card className="overflow-hidden bg-card/80 backdrop-blur-sm border-primary/20">
+      <Card className="overflow-hidden bg-black/30 backdrop-blur-lg border-white/10 shadow-xl shadow-black/20">
         <CardContent className="p-0">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-b-white/10">
-                <TableHead className="w-[120px] font-bold text-lg">Shift</TableHead>
-                {daysOfWeek.map((day) => (
-                  <TableHead key={day} className="text-center font-bold text-lg">{day}</TableHead>
-                ))}
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {shifts.map((shift) => (
-                <TableRow key={shift} className="border-b-white/10 last:border-b-0">
-                  <TableCell className="font-semibold flex items-center text-base">
-                    {shiftIcons[shift as keyof typeof shiftIcons]}
-                    {shift}
-                  </TableCell>
-                  {daysOfWeek.map((day) => {
-                    const shiftData = roster?.[day]?.[shift];
-                    return (
-                      <TableCell key={`${day}-${shift}`} className="p-1 h-32">
-                        {shiftData ? (
-                          <ShiftCell
-                            shiftData={shiftData}
-                            onClick={() => handleCellClick(day, shift, shiftData)}
-                          />
-                        ) : null}
-                      </TableCell>
-                    );
-                  })}
+          <div className="overflow-x-auto">
+            <Table className="min-w-full">
+              <TableHeader>
+                <TableRow className="border-b-white/10 hover:bg-transparent">
+                  <TableHead className="w-[150px] font-bold text-base text-white/90">Shift</TableHead>
+                  {daysOfWeek.map((day) => (
+                    <TableHead key={day} className="text-center font-bold text-base text-white/90 min-w-[120px]">{day}</TableHead>
+                  ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {shifts.map((shift) => (
+                  <TableRow key={shift} className="border-b-white/10 last:border-b-0 hover:bg-transparent">
+                    <TableCell className="font-semibold flex items-center text-sm text-white/80">
+                      {shiftIcons[shift as keyof typeof shiftIcons]}
+                      {shift}
+                    </TableCell>
+                    {daysOfWeek.map((day) => {
+                      const shiftData = roster?.[day]?.[shift];
+                      return (
+                        <TableCell key={`${day}-${shift}`} className="p-1 h-36">
+                          {shiftData ? (
+                            <ShiftCell
+                              shiftData={shiftData}
+                              onClick={() => handleCellClick(day, shift, shiftData)}
+                            />
+                          ) : <div className="h-full w-full"></div>}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
       {modalState.isOpen && modalState.shiftData && (

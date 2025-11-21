@@ -51,26 +51,26 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
-      <Card className="w-full max-w-md shadow-2xl bg-card/80 backdrop-blur-sm border-primary/20">
+    <div className="flex min-h-screen items-center justify-center p-4">
+      <Card className="w-full max-w-md bg-black/30 backdrop-blur-lg border-white/10 shadow-2xl shadow-primary/10">
         <CardHeader className="text-center">
-           <div className="flex justify-center items-center gap-2 mb-2">
-              <Hospital className="h-8 w-8 text-primary" />
-              <CardTitle className="text-3xl font-bold tracking-tight">ShiftSync Pro</CardTitle>
+           <div className="flex justify-center items-center gap-2 mb-4">
+              <Hospital className="h-10 w-10 text-primary" />
+              <CardTitle className="text-4xl font-bold tracking-tight text-white">ShiftSync Pro</CardTitle>
            </div>
-          <CardDescription>Medical Staff Scheduling System</CardDescription>
+          <CardDescription className="text-blue-200/80">Medical Staff Scheduling System</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="space-y-2">
-            <h3 className="font-semibold text-center text-lg">Doctor Login</h3>
+          <div className="space-y-4">
+            <h3 className="font-semibold text-center text-lg text-white/90">Doctor Login</h3>
             {doctors && doctors.names && (
               <Select onValueChange={setSelectedDoctor} value={selectedDoctor}>
-                <SelectTrigger className="bg-background/80">
+                <SelectTrigger className="bg-black/40 border-white/20 text-white placeholder:text-gray-400">
                   <SelectValue placeholder="Select your name..." />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent className="bg-black/80 backdrop-blur-lg border-white/20 text-white">
                   {doctors.names.map((name) => (
-                    <SelectItem key={name} value={name}>
+                    <SelectItem key={name} value={name} className="focus:bg-primary/50">
                       {name}
                     </SelectItem>
                   ))}
@@ -84,14 +84,14 @@ export default function Login() {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t border-border" />
+              <span className="w-full border-t border-white/20" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card/80 px-2 text-muted-foreground">Or</span>
+              <span className="bg-background/0 px-2 text-muted-foreground">Or</span>
             </div>
           </div>
 
-          <Button onClick={handleCoordinatorLogin} variant="secondary" className="w-full">
+          <Button onClick={handleCoordinatorLogin} variant="secondary" className="w-full bg-secondary/80 hover:bg-secondary">
             Clinical Coordinator Login
           </Button>
         </CardContent>

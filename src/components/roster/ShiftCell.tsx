@@ -21,23 +21,23 @@ export default function ShiftCell({ shiftData, onClick }: ShiftCellProps) {
     <div
       onClick={onClick}
       className={cn(
-        'h-full w-full p-2 rounded-lg cursor-pointer transition-all duration-300 flex flex-col justify-between border-2',
-        'hover:shadow-lg hover:shadow-primary/40 hover:border-primary/60',
+        'h-full w-full p-2 rounded-md cursor-pointer transition-all duration-200 flex flex-col justify-between border',
+        'hover:bg-primary/20 hover:border-primary/80',
         isUserInShift
-          ? 'bg-primary/20 border-primary/80 shadow-inner shadow-primary/30'
-          : 'bg-secondary/50 hover:bg-secondary/80 border-transparent',
-        filledSlots >= slots && !isUserInShift ? 'bg-muted/50 cursor-not-allowed hover:shadow-none hover:border-transparent' : ''
+          ? 'bg-primary/20 border-primary'
+          : 'bg-white/5 border-transparent',
+        filledSlots >= slots && !isUserInShift ? 'bg-muted/30 cursor-not-allowed hover:bg-muted/30 hover:border-transparent' : ''
       )}
     >
-      <div className="flex-grow space-y-1 overflow-y-auto">
+      <div className="flex-grow space-y-1 overflow-y-auto pr-1">
         {applicants.map((name) => (
           <div
             key={name}
             className={cn(
-              'text-xs font-semibold px-2 py-1 rounded-full truncate text-center',
+              'text-xs font-medium px-2 py-0.5 rounded-full truncate text-center',
               name === user?.name
-                ? 'bg-primary text-primary-foreground shadow-md'
-                : 'bg-background/70 text-foreground'
+                ? 'bg-primary text-primary-foreground'
+                : 'bg-background/80 text-foreground/80'
             )}
           >
             {name.replace('Dr. ', '')}
@@ -46,7 +46,7 @@ export default function ShiftCell({ shiftData, onClick }: ShiftCellProps) {
       </div>
        <div className="flex items-center justify-between pt-2">
          <span className="text-xs font-mono text-muted-foreground">{filledSlots}/{slots}</span>
-        <Progress value={progress} className="h-1.5 w-1/2" />
+        <Progress value={progress} className="h-1.5 w-1/2 bg-white/10" />
       </div>
     </div>
   );
