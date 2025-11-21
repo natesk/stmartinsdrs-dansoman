@@ -8,9 +8,9 @@ import Header from '@/components/layout/Header';
 import Loading from '@/app/loading';
 
 export default function Dashboard() {
-  const { user, loading } = useApp();
+  const { user, loading, doctors, roster } = useApp();
 
-  if (loading) {
+  if (loading || !doctors || !roster) {
     return <Loading />;
   }
 

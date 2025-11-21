@@ -63,19 +63,21 @@ export default function Login() {
         <CardContent className="space-y-6">
           <div className="space-y-2">
             <h3 className="font-semibold text-center">Doctor Login</h3>
-            <Select onValueChange={setSelectedDoctor} value={selectedDoctor}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select your name..." />
-              </SelectTrigger>
-              <SelectContent>
-                {doctors?.names.map((name) => (
-                  <SelectItem key={name} value={name}>
-                    {name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-            <Button onClick={handleDoctorLogin} className="w-full">
+            {doctors && doctors.names && (
+              <Select onValueChange={setSelectedDoctor} value={selectedDoctor}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select your name..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {doctors.names.map((name) => (
+                    <SelectItem key={name} value={name}>
+                      {name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            <Button onClick={handleDoctorLogin} className="w-full" disabled={!doctors}>
               Login
             </Button>
           </div>

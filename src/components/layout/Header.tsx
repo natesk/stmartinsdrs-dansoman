@@ -14,13 +14,17 @@ export default function Header() {
         <h1 className="text-xl font-bold tracking-tight">ShiftSync Pro</h1>
       </div>
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          <UserCircle className="h-5 w-5" />
-          <span>{user?.name}</span>
-        </div>
-        <Button variant="ghost" size="icon" onClick={logout} aria-label="Log out">
-          <LogOut className="h-5 w-5" />
-        </Button>
+        {user && (
+          <>
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <UserCircle className="h-5 w-5" />
+              <span>{user?.name}</span>
+            </div>
+            <Button variant="ghost" size="icon" onClick={logout} aria-label="Log out">
+              <LogOut className="h-5 w-5" />
+            </Button>
+          </>
+        )}
       </div>
     </header>
   );
