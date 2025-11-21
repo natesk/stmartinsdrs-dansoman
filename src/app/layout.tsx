@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
-      <body className={cn(inter.className, "bg-space")}>
+    <html lang="en">
+      <body className={cn(inter.className)}>
         <FirebaseProvider>
           <AppProvider>
             {children}

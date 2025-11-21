@@ -12,9 +12,9 @@ import { Sun, CloudSun, Moon } from 'lucide-react';
 const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 const shifts = ['Morning', 'Afternoon', 'Night'];
 const shiftIcons = {
-  Morning: <Sun className="mr-2 h-5 w-5 text-yellow-400" />,
-  Afternoon: <CloudSun className="mr-2 h-5 w-5 text-orange-400" />,
-  Night: <Moon className="mr-2 h-5 w-5 text-indigo-400" />,
+  Morning: <Sun className="mr-2 h-5 w-5 text-yellow-500" />,
+  Afternoon: <CloudSun className="mr-2 h-5 w-5 text-orange-500" />,
+  Night: <Moon className="mr-2 h-5 w-5 text-indigo-500" />,
 };
 
 
@@ -37,22 +37,22 @@ export default function RosterTable() {
 
   return (
     <>
-      <Card className="overflow-hidden bg-black/30 backdrop-blur-lg border-white/10 shadow-xl shadow-black/20">
+      <Card className="overflow-hidden shadow-lg">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
             <Table className="min-w-full">
               <TableHeader>
-                <TableRow className="border-b-white/10 hover:bg-transparent">
-                  <TableHead className="w-[150px] font-bold text-base text-white/90">Shift</TableHead>
+                <TableRow className="hover:bg-muted/30">
+                  <TableHead className="w-[150px] font-bold text-base">Shift</TableHead>
                   {daysOfWeek.map((day) => (
-                    <TableHead key={day} className="text-center font-bold text-base text-white/90 min-w-[120px]">{day}</TableHead>
+                    <TableHead key={day} className="text-center font-bold text-base min-w-[120px]">{day}</TableHead>
                   ))}
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {shifts.map((shift) => (
-                  <TableRow key={shift} className="border-b-white/10 last:border-b-0 hover:bg-transparent">
-                    <TableCell className="font-semibold flex items-center text-sm text-white/80">
+                  <TableRow key={shift} className="last:border-b-0">
+                    <TableCell className="font-semibold flex items-center text-sm">
                       {shiftIcons[shift as keyof typeof shiftIcons]}
                       {shift}
                     </TableCell>
