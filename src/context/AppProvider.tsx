@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { onSnapshot, doc, setDoc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { useFirebase } from '@/context/FirebaseProvider';
 import type { User, Roster, Doctors } from '@/lib/types';
 import { INITIAL_ROSTER, INITIAL_DOCTORS } from '@/lib/initial-data';
 import { useToast } from '@/hooks/use-toast';
@@ -28,8 +28,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [doctors, setDoctors] = useState<Doctors | null>(null);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const { db } = useFirebase();
 
   useEffect(() => {
+    if (!db) return;
+
     setLoading(true);
 
     const rosterDocRef = doc(db, 'roster', 'currentWeek');
@@ -66,7 +69,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       unsubscribeRoster();
       unsubscribeDoctors();
     };
-  }, [toast]);
+  }, [toast, db]);
 
   const login = (loggedInUser: User) => {
     setUser(loggedInUser);
@@ -77,7 +80,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
 
   const updateRoster = async (day: string, shift: string, applicants: string[]) => {
-    if (!roster) return;
+    if (!roster || !db) return;
     const newRoster = { ...roster };
     newRoster[day][shift].applicants = applicants;
     const rosterDocRef = doc(db, 'roster', 'currentWeek');
@@ -85,14 +88,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
     
   const addDoctor = async (name: string) => {
-    if (!doctors) return;
+    if (!doctors || !db) return;
     const newDoctors = { names: [...doctors.names, name] };
     const doctorsDocRef = doc(db, 'doctors', 'list');
     await setDoc(doctorsDocRef, newDoctors);
   };
 
   const removeDoctor = async (name: string) => {
-    if (!doctors || !roster) return;
+    if (!doctors || !roster || !db) return;
     const newDoctors = { names: doctors.names.filter(d => d !== name) };
     const doctorsDocRef = doc(db, 'doctors', 'list');
     await setDoc(doctorsDocRef, newDoctors);
@@ -109,6 +112,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
     
   const resetRoster = async () => {
+    if (!db) return;
     const rosterDocRef = doc(db, 'roster', 'currentWeek');
     await setDoc(rosterDocRef, INITIAL_ROSTER);
   }
