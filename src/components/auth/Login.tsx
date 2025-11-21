@@ -51,7 +51,7 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 dark:bg-gray-900 p-4">
+    <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="w-full max-w-md shadow-2xl">
         <CardHeader className="text-center">
            <div className="flex justify-center items-center gap-2 mb-2">
@@ -62,9 +62,10 @@ export default function Login() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
+            <h3 className="font-semibold text-center">Doctor Login</h3>
             <Select onValueChange={setSelectedDoctor} value={selectedDoctor}>
               <SelectTrigger>
-                <SelectValue placeholder="Select your name to log in..." />
+                <SelectValue placeholder="Select your name..." />
               </SelectTrigger>
               <SelectContent>
                 {doctors?.names.map((name) => (
@@ -75,7 +76,7 @@ export default function Login() {
               </SelectContent>
             </Select>
             <Button onClick={handleDoctorLogin} className="w-full">
-              Login as Doctor
+              Login
             </Button>
           </div>
 
@@ -89,7 +90,7 @@ export default function Login() {
           </div>
 
           <Button onClick={handleCoordinatorLogin} variant="secondary" className="w-full">
-            Login as Clinical Coordinator
+            Clinical Coordinator Login
           </Button>
         </CardContent>
       </Card>
