@@ -19,10 +19,10 @@ export default function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-background to-secondary/40">
       <Header />
-      <main className="flex-1 p-4 md:p-6 lg:p-8 bg-background">
-        <div className="mx-auto max-w-7xl space-y-6">
+      <main className="flex-1 p-4 md:p-6 lg:p-8">
+        <div className="mx-auto max-w-7xl space-y-8">
           <RosterTable />
           {user.role === 'Clinical Coordinator' && <AdminPanel />}
         </div>

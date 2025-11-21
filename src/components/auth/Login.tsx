@@ -51,8 +51,8 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-md shadow-2xl">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-background to-secondary p-4">
+      <Card className="w-full max-w-md shadow-2xl bg-card/80 backdrop-blur-sm border-primary/20">
         <CardHeader className="text-center">
            <div className="flex justify-center items-center gap-2 mb-2">
               <Hospital className="h-8 w-8 text-primary" />
@@ -62,10 +62,10 @@ export default function Login() {
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <h3 className="font-semibold text-center">Doctor Login</h3>
+            <h3 className="font-semibold text-center text-lg">Doctor Login</h3>
             {doctors && doctors.names && (
               <Select onValueChange={setSelectedDoctor} value={selectedDoctor}>
-                <SelectTrigger>
+                <SelectTrigger className="bg-background/80">
                   <SelectValue placeholder="Select your name..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -84,10 +84,10 @@ export default function Login() {
 
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+              <span className="w-full border-t border-border" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-card px-2 text-muted-foreground">Or</span>
+              <span className="bg-card/80 px-2 text-muted-foreground">Or</span>
             </div>
           </div>
 

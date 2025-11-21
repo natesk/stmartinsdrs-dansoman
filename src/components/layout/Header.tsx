@@ -8,10 +8,10 @@ export default function Header() {
   const { user, logout } = useApp();
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b bg-card px-4 md:px-6">
+    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-border bg-card/80 backdrop-blur-sm px-4 md:px-6">
       <div className="flex items-center gap-2">
         <Hospital className="h-6 w-6 text-primary" />
-        <h1 className="text-xl font-bold tracking-tight">ShiftSync Pro</h1>
+        <h1 className="text-xl font-bold tracking-tight text-foreground">ShiftSync Pro</h1>
       </div>
       <div className="flex items-center gap-4">
         {user && (
