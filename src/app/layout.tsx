@@ -1,12 +1,15 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { PT_Sans } from 'next/font/google';
 import './globals.css';
 import { Toaster } from '@/components/ui/toaster';
-import { AppProvider } from '@/context/AppProvider';
 import { FirebaseProvider } from '@/context/FirebaseProvider';
 import { cn } from '@/lib/utils';
+import ClientAppProvider from '@/context/ClientAppProvider';
 
-const inter = Inter({ subsets: ['latin'] });
+const ptSans = PT_Sans({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+});
 
 export const metadata: Metadata = {
   title: 'ShiftSync Pro',
@@ -20,12 +23,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn(inter.className)}>
+      <body className={cn(ptSans.className, "bg-gray-100 dark:bg-gray-900")}>
         <FirebaseProvider>
-          <AppProvider>
+          <ClientAppProvider>
             {children}
             <Toaster />
-          </AppProvider>
+          </ClientAppProvider>
         </FirebaseProvider>
       </body>
     </html>
